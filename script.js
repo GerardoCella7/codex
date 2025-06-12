@@ -20,7 +20,18 @@ class Puissance4 {
         this.currentPlayer = 1;
         this.gameOver = false;
 
+        // Calcul des décalages pour centrer la grille dans le canvas
+        this.calculateOffsets();
+
         this.init();
+    }
+
+    // Calcule les marges pour centrer la grille
+    calculateOffsets() {
+        const boardWidth = this.COLS * this.CELL_SIZE + (this.COLS + 1) * this.PADDING;
+        const boardHeight = this.ROWS * this.CELL_SIZE + (this.ROWS + 1) * this.PADDING;
+        this.offsetX = (this.canvas.width - boardWidth) / 2;
+        this.offsetY = (this.canvas.height - boardHeight) / 2;
     }
 
     // Initialise les écouteurs et dessine le plateau vide
@@ -36,8 +47,8 @@ class Puissance4 {
 
         for (let row = 0; row < this.ROWS; row++) {
             for (let col = 0; col < this.COLS; col++) {
-                const x = col * (this.CELL_SIZE + this.PADDING) + this.PADDING;
-                const y = row * (this.CELL_SIZE + this.PADDING) + this.PADDING;
+                const x = this.offsetX + this.PADDING + col * (this.CELL_SIZE + this.PADDING);
+                const y = this.offsetY + this.PADDING + row * (this.CELL_SIZE + this.PADDING);
 
                 // Cercle représentant l'emplacement du pion
                 this.ctx.beginPath();
@@ -69,10 +80,11 @@ class Puissance4 {
         if (this.gameOver) return;
 
         const rect = this.canvas.getBoundingClientRect();
-        const x = e.clientX - rect.left;
+        const x = e.clientX - rect.left - this.offsetX - this.PADDING;
         const col = Math.floor(x / (this.CELL_SIZE + this.PADDING));
+        const maxX = this.COLS * (this.CELL_SIZE + this.PADDING) - this.PADDING;
 
-        if (col >= 0 && col < this.COLS) {
+        if (x >= 0 && x <= maxX && col >= 0 && col < this.COLS) {
             this.dropPiece(col);
         }
     }
