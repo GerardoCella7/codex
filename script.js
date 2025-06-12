@@ -31,6 +31,9 @@ class Puissance4 {
         this.hoverCol = null;
         this.animating = false;
         this.winningCells = [];
+        // Coordonnées des derniers coups joués pour chaque joueur
+        // Index 0 -> Joueur 1, index 1 -> Joueur 2
+        this.lastMoves = [null, null];
 
         // Informations sur les joueurs
         this.player1Name = "Joueur 1";
@@ -200,6 +203,28 @@ class Puissance4 {
 
                 this.ctx.fill();
                 this.ctx.stroke();
+                const isLastMove =
+                    (this.lastMoves[0] &&
+                        this.lastMoves[0][0] === row &&
+                        this.lastMoves[0][1] === col) ||
+                    (this.lastMoves[1] &&
+                        this.lastMoves[1][0] === row &&
+                        this.lastMoves[1][1] === col);
+                if (isLastMove) {
+                    this.ctx.lineWidth = 5;
+                    this.ctx.strokeStyle = "black";
+                    this.ctx.beginPath();
+                    this.ctx.arc(
+                        x + this.CELL_SIZE / 2,
+                        y + this.CELL_SIZE / 2,
+                        this.CELL_SIZE / 2 - 3,
+                        0,
+                        Math.PI * 2
+                    );
+                    this.ctx.stroke();
+                    this.ctx.lineWidth = 1;
+                    this.ctx.strokeStyle = "black";
+                }
                 if (
                     this.winningCells.some(
                         ([r, c]) => r === row && c === col
@@ -283,6 +308,7 @@ class Puissance4 {
                 this.animating = true;
                 this.animateDrop(col, row, () => {
                     this.board[row][col] = this.currentPlayer;
+                    this.lastMoves[this.currentPlayer - 1] = [row, col];
                     this.playDropSound();
 
                     const win = this.checkWin(row, col);
@@ -409,6 +435,7 @@ class Puissance4 {
         this.hoverCol = null;
         this.animating = false;
         this.winningCells = [];
+        this.lastMoves = [null, null];
         this.statusText = `Tour de ${this.player1Name}`;
         this.statusColor = "red";
         // Pendant la partie, le bouton de reset reste inactif
