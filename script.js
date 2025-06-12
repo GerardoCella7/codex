@@ -117,6 +117,7 @@ class Puissance4 {
 
     // Affiche un pion temporaire lors du survol d'une colonne disponible
     handleMouseMove(e) {
+        if (this.gameOver) return;
         const rect = this.canvas.getBoundingClientRect();
         const x = e.clientX - rect.left - this.offsetX - this.PADDING;
         const col = Math.floor(x / (this.CELL_SIZE + this.PADDING));
@@ -145,6 +146,7 @@ class Puissance4 {
 
                 if (this.checkWin(row, col)) {
                     this.gameOver = true;
+                    this.hoverCol = null;
                     this.drawBoard();
                     this.statusDisplay.textContent = `Joueur ${this.currentPlayer} a gagné !`;
                 } else {
