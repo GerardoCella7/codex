@@ -110,7 +110,26 @@ class Puissance4 {
             this.toggleDarkMode()
         );
         this.startButton.addEventListener("click", () => this.startGame());
+        this.audioCtx = null;
         this.container.classList.add("hidden");
+    }
+
+    // Joue un court son de "jeton qui tombe" lors de la pose d'un pion
+    playDropSound() {
+        if (!this.audioCtx) {
+            this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        const ctx = this.audioCtx;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = "square";
+        osc.frequency.setValueAtTime(600, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(150, ctx.currentTime + 0.2);
+        gain.gain.setValueAtTime(0.3, ctx.currentTime);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.2);
     }
 
     // Dessine le plateau et les pions dans le canvas
@@ -213,6 +232,7 @@ class Puissance4 {
         for (let row = this.ROWS - 1; row >= 0; row--) {
             if (this.board[row][col] === 0) {
                 this.board[row][col] = this.currentPlayer;
+                this.playDropSound();
 
                 if (this.checkWin(row, col)) {
                     this.gameOver = true;
