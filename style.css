@@ -91,3 +91,15 @@ body.dark-mode #status {
 #darkModeToggle:hover {
     background-color: #555;
 }
+
+/* Zone d'affichage du score */
+#score {
+    margin-top: 0.5rem;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #333;
+}
+
+body.dark-mode #score {
+    color: #eee;
+}
