@@ -42,7 +42,7 @@ class Puissance4 {
     // Affiche le message d\'état sous le plateau
     drawStatus() {
         const boardHeight = this.ROWS * this.CELL_SIZE + (this.ROWS + 1) * this.PADDING;
-        const y = this.offsetY + boardHeight + 20;
+        const y = this.offsetY + boardHeight + 40;
         this.ctx.save();
         this.ctx.textAlign = 'center';
         this.ctx.font = '40px Arial';
