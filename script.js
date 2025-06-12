@@ -8,7 +8,6 @@ class Puissance4 {
         this.ctx = this.canvas.getContext('2d');
         this.resetButton = document.getElementById('resetButton');
         this.darkModeToggle = document.getElementById('darkModeToggle');
-        this.scoreDisplay = document.getElementById('score');
         this.container = document.querySelector('.container');
         this.playerSetup = document.getElementById('playerSetup');
         this.player1Input = document.getElementById('player1Input');
@@ -49,6 +48,33 @@ class Puissance4 {
         // Couleur du texte selon le joueur courant
         this.ctx.fillStyle = this.currentPlayer === 1 ? 'red' : 'yellow';
         this.ctx.fillText(this.statusText, this.canvas.width / 2, y);
+        this.ctx.restore();
+    }
+
+    // Dessine le score dans les coins inférieurs du canvas
+    drawScore() {
+        this.ctx.save();
+        this.ctx.font = '50px Arial';
+        this.ctx.textBaseline = 'bottom';
+
+        // Score du joueur 1 en bas à gauche
+        this.ctx.textAlign = 'left';
+        this.ctx.fillStyle = 'red';
+        this.ctx.fillText(
+            `${this.player1Name}: ${this.scores[0]}`,
+            20,
+            this.canvas.height - 10
+        );
+
+        // Score du joueur 2 en bas à droite
+        this.ctx.textAlign = 'right';
+        this.ctx.fillStyle = 'yellow';
+        this.ctx.fillText(
+            `${this.player2Name}: ${this.scores[1]}`,
+            this.canvas.width - 20,
+            this.canvas.height - 10
+        );
+
         this.ctx.restore();
     }
 
@@ -127,6 +153,7 @@ class Puissance4 {
         }
 
         this.drawStatus();
+        this.drawScore();
     }
 
     // Gère le clic sur le plateau pour insérer un pion
@@ -178,7 +205,6 @@ class Puissance4 {
                     const winnerName = this.currentPlayer === 1 ? this.player1Name : this.player2Name;
                     this.statusText = `${winnerName} a gagné !`;
                     this.scores[this.currentPlayer - 1]++;
-                    this.updateScoreDisplay();
                 } else {
                     // Passage au joueur suivant
                     this.currentPlayer = this.currentPlayer === 1 ? 2 : 1;
@@ -242,16 +268,10 @@ class Puissance4 {
         this.player1Name = this.player1Input.value.trim() || 'Joueur 1';
         this.player2Name = this.player2Input.value.trim() || 'Joueur 2';
         this.scores = [0, 0];
-        this.updateScoreDisplay();
         this.statusText = `Tour de ${this.player1Name}`;
         this.playerSetup.classList.add('hidden');
         this.container.classList.remove('hidden');
         this.resetGame();
-    }
-
-    // Met à jour l'affichage du score avec les noms
-    updateScoreDisplay() {
-        this.scoreDisplay.textContent = `Score - ${this.player1Name}: ${this.scores[0]} | ${this.player2Name}: ${this.scores[1]}`;
     }
 
     // Active ou désactive le mode sombre
