@@ -8,6 +8,7 @@ class Puissance4 {
         this.ctx = this.canvas.getContext('2d');
         this.resetButton = document.getElementById('resetButton');
         this.statusDisplay = document.getElementById('status');
+        this.darkModeToggle = document.getElementById('darkModeToggle');
 
         // Paramètres du plateau
         this.ROWS = 6;
@@ -39,6 +40,7 @@ class Puissance4 {
         this.drawBoard();
         this.canvas.addEventListener('click', (e) => this.handleClick(e));
         this.resetButton.addEventListener('click', () => this.resetGame());
+        this.darkModeToggle.addEventListener('click', () => this.toggleDarkMode());
     }
 
     // Dessine le plateau et les pions dans le canvas
@@ -150,6 +152,16 @@ class Puissance4 {
         this.gameOver = false;
         this.statusDisplay.textContent = `Tour du joueur ${this.currentPlayer}`;
         this.drawBoard();
+    }
+
+    // Active ou désactive le mode sombre
+    toggleDarkMode() {
+        document.body.classList.toggle('dark-mode');
+        if (document.body.classList.contains('dark-mode')) {
+            this.darkModeToggle.textContent = 'Mode clair';
+        } else {
+            this.darkModeToggle.textContent = 'Mode sombre';
+        }
     }
 }
 
