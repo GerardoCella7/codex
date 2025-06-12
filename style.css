@@ -73,19 +73,6 @@ canvas {
     cursor: not-allowed;
 }
 
-/* Styles de l'ancienne zone de statut supprimée */
-/*
-#status {
-    font-size: 1.2rem;
-    color: #333;
-    font-weight: bold;
-}
-
-body.dark-mode #status {
-    color: #eee;
-}
-*/
-
 #darkModeToggle {
     position: absolute;
     top: 0.5rem;
@@ -101,7 +88,6 @@ body.dark-mode #status {
 body.dark-mode #darkModeToggle {
     color: #eee;
 }
-
 
 /* Masquer un élément */
 .hidden {
@@ -143,6 +129,7 @@ body.dark-mode .setup input {
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
+    margin-top: 12px;
 }
 
 #startButton:hover {
