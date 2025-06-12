@@ -30,6 +30,7 @@ class Puissance4 {
         this.gameOver = false;
         this.hoverCol = null;
         this.animating = false;
+        this.winningCells = [];
 
         // Informations sur les joueurs
         this.player1Name = "Joueur 1";
@@ -199,6 +200,25 @@ class Puissance4 {
 
                 this.ctx.fill();
                 this.ctx.stroke();
+                if (
+                    this.winningCells.some(
+                        ([r, c]) => r === row && c === col
+                    )
+                ) {
+                    this.ctx.lineWidth = 5;
+                    this.ctx.strokeStyle = "lime";
+                    this.ctx.beginPath();
+                    this.ctx.arc(
+                        x + this.CELL_SIZE / 2,
+                        y + this.CELL_SIZE / 2,
+                        this.CELL_SIZE / 2 - 3,
+                        0,
+                        Math.PI * 2
+                    );
+                    this.ctx.stroke();
+                    this.ctx.lineWidth = 1;
+                    this.ctx.strokeStyle = "black";
+                }
             }
         }
 
@@ -265,9 +285,11 @@ class Puissance4 {
                     this.board[row][col] = this.currentPlayer;
                     this.playDropSound();
 
-                    if (this.checkWin(row, col)) {
+                    const win = this.checkWin(row, col);
+                    if (win) {
                         this.gameOver = true;
                         this.hoverCol = null;
+                        this.winningCells = win;
                         // La partie est finie : activer le bouton de nouvelle partie
                         this.resetButton.disabled = false;
                         this.playWinSound();
@@ -352,7 +374,7 @@ class Puissance4 {
         ];
 
         for (const direction of directions) {
-            let count = 1;
+            const cells = [[row, col]];
 
             for (const [dx, dy] of direction) {
                 let r = row + dx;
@@ -365,16 +387,16 @@ class Puissance4 {
                     c < this.COLS &&
                     this.board[r][c] === this.currentPlayer
                 ) {
-                    count++;
+                    cells.push([r, c]);
                     r += dx;
                     c += dy;
                 }
             }
 
-            if (count >= 4) return true;
+            if (cells.length >= 4) return cells;
         }
 
-        return false;
+        return null;
     }
 
     // Réinitialise le plateau pour une nouvelle partie
@@ -386,6 +408,7 @@ class Puissance4 {
         this.gameOver = false;
         this.hoverCol = null;
         this.animating = false;
+        this.winningCells = [];
         this.statusText = `Tour de ${this.player1Name}`;
         this.statusColor = "red";
         // Pendant la partie, le bouton de reset reste inactif
