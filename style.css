@@ -103,3 +103,49 @@ body.dark-mode #status {
 body.dark-mode #score {
     color: #eee;
 }
+
+/* Masquer un élément */
+.hidden {
+    display: none;
+}
+
+/* Formulaire de saisie des noms des joueurs */
+.setup {
+    text-align: center;
+    background-color: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+body.dark-mode .setup {
+    background-color: #333;
+}
+
+.setup input {
+    padding: 0.5rem;
+    margin: 0.5rem;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+body.dark-mode .setup input {
+    background-color: #555;
+    color: white;
+    border: 1px solid #777;
+}
+
+#startButton {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#startButton:hover {
+    background-color: #45a049;
+}

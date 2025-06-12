@@ -9,6 +9,12 @@ class Puissance4 {
         this.resetButton = document.getElementById('resetButton');
         this.statusDisplay = document.getElementById('status');
         this.darkModeToggle = document.getElementById('darkModeToggle');
+        this.scoreDisplay = document.getElementById('score');
+        this.container = document.querySelector('.container');
+        this.playerSetup = document.getElementById('playerSetup');
+        this.player1Input = document.getElementById('player1Input');
+        this.player2Input = document.getElementById('player2Input');
+        this.startButton = document.getElementById('startButton');
 
         // Paramètres du plateau
         this.ROWS = 6;
@@ -21,6 +27,11 @@ class Puissance4 {
         this.currentPlayer = 1;
         this.gameOver = false;
         this.hoverCol = null;
+
+        // Informations sur les joueurs
+        this.player1Name = 'Joueur 1';
+        this.player2Name = 'Joueur 2';
+        this.scores = [0, 0];
 
         // Calcul des décalages pour centrer la grille dans le canvas
         this.calculateOffsets();
@@ -44,6 +55,8 @@ class Puissance4 {
         this.canvas.addEventListener('mouseleave', () => { this.hoverCol = null; this.drawBoard(); });
         this.resetButton.addEventListener('click', () => this.resetGame());
         this.darkModeToggle.addEventListener('click', () => this.toggleDarkMode());
+        this.startButton.addEventListener('click', () => this.startGame());
+        this.container.classList.add('hidden');
     }
 
     // Dessine le plateau et les pions dans le canvas
@@ -148,14 +161,18 @@ class Puissance4 {
                     this.gameOver = true;
                     this.hoverCol = null;
                     this.drawBoard();
-                    this.statusDisplay.textContent = `Joueur ${this.currentPlayer} a gagné !`;
+                    const winnerName = this.currentPlayer === 1 ? this.player1Name : this.player2Name;
+                    this.statusDisplay.textContent = `${winnerName} a gagné !`;
+                    this.scores[this.currentPlayer - 1]++;
+                    this.updateScoreDisplay();
                 } else {
                     // Passage au joueur suivant
                     this.currentPlayer = this.currentPlayer === 1 ? 2 : 1;
                     // Met à jour la position du jeton de survol : l’afficher
                     // seulement si la colonne n’est pas pleine après le coup.
                     this.hoverCol = this.board[0][col] === 0 ? col : null;
-                    this.statusDisplay.textContent = `Tour du joueur ${this.currentPlayer}`;
+                    const currentName = this.currentPlayer === 1 ? this.player1Name : this.player2Name;
+                    this.statusDisplay.textContent = `Tour de ${currentName}`;
                     this.drawBoard();
                 }
                 return;
@@ -202,8 +219,25 @@ class Puissance4 {
         this.currentPlayer = 1;
         this.gameOver = false;
         this.hoverCol = null;
-        this.statusDisplay.textContent = `Tour du joueur ${this.currentPlayer}`;
+        this.statusDisplay.textContent = `Tour de ${this.player1Name}`;
         this.drawBoard();
+    }
+
+    // Lance la partie après la saisie des noms
+    startGame() {
+        this.player1Name = this.player1Input.value.trim() || 'Joueur 1';
+        this.player2Name = this.player2Input.value.trim() || 'Joueur 2';
+        this.scores = [0, 0];
+        this.updateScoreDisplay();
+        this.statusDisplay.textContent = `Tour de ${this.player1Name}`;
+        this.playerSetup.classList.add('hidden');
+        this.container.classList.remove('hidden');
+        this.resetGame();
+    }
+
+    // Met à jour l'affichage du score avec les noms
+    updateScoreDisplay() {
+        this.scoreDisplay.textContent = `Score - ${this.player1Name}: ${this.scores[0]} | ${this.player2Name}: ${this.scores[1]}`;
     }
 
     // Active ou désactive le mode sombre

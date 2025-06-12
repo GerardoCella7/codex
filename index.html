@@ -7,8 +7,18 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- Saisie des noms des joueurs -->
+    <div id="playerSetup" class="setup">
+        <h1>Puissance 4</h1>
+        <div class="inputs">
+            <input type="text" id="player1Input" placeholder="Nom du Joueur 1">
+            <input type="text" id="player2Input" placeholder="Nom du Joueur 2">
+        </div>
+        <button id="startButton">Commencer la partie</button>
+    </div>
+
     <!-- Page principale du jeu Puissance 4 -->
-    <div class="container">
+    <div class="container hidden">
         <h1>Puissance 4</h1>
         <canvas id="gameCanvas" width="700" height="700"></canvas>
         <div id="score">Score - Joueur 1: 0 | Joueur 2: 0</div>
