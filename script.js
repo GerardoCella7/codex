@@ -4,33 +4,35 @@
 class Puissance4 {
     constructor() {
         // Références aux éléments de la page
-        this.canvas = document.getElementById('gameCanvas');
-        this.ctx = this.canvas.getContext('2d');
-        this.resetButton = document.getElementById('resetButton');
-        this.darkModeToggle = document.getElementById('darkModeToggle');
-        this.container = document.querySelector('.container');
-        this.playerSetup = document.getElementById('playerSetup');
-        this.player1Input = document.getElementById('player1Input');
-        this.player2Input = document.getElementById('player2Input');
-        this.startButton = document.getElementById('startButton');
+        this.canvas = document.getElementById("gameCanvas");
+        this.ctx = this.canvas.getContext("2d");
+        this.resetButton = document.getElementById("resetButton");
+        this.darkModeToggle = document.getElementById("darkModeToggle");
+        this.container = document.querySelector(".container");
+        this.playerSetup = document.getElementById("playerSetup");
+        this.player1Input = document.getElementById("player1Input");
+        this.player2Input = document.getElementById("player2Input");
+        this.startButton = document.getElementById("startButton");
 
         // Paramètres du plateau
         this.ROWS = 6;
         this.COLS = 7;
         this.CELL_SIZE = 80; // dimension d'une case
-        this.PADDING = 10;   // espace entre les cases
+        this.PADDING = 10; // espace entre les cases
 
         // État du jeu
-        this.board = Array(this.ROWS).fill().map(() => Array(this.COLS).fill(0));
+        this.board = Array(this.ROWS)
+            .fill()
+            .map(() => Array(this.COLS).fill(0));
         this.currentPlayer = 1;
         this.gameOver = false;
         this.hoverCol = null;
 
         // Informations sur les joueurs
-        this.player1Name = 'Joueur 1';
-        this.player2Name = 'Joueur 2';
+        this.player1Name = "Joueur 1";
+        this.player2Name = "Joueur 2";
         this.scores = [0, 0];
-        this.statusText = 'Tour du joueur 1';
+        this.statusText = "Tour du joueur 1";
 
         // Calcul des décalages pour centrer la grille dans le canvas
         this.calculateOffsets();
@@ -40,13 +42,14 @@ class Puissance4 {
 
     // Affiche le message d\'état sous le plateau
     drawStatus() {
-        const boardHeight = this.ROWS * this.CELL_SIZE + (this.ROWS + 1) * this.PADDING;
+        const boardHeight =
+            this.ROWS * this.CELL_SIZE + (this.ROWS + 1) * this.PADDING;
         const y = this.offsetY + boardHeight + 40;
         this.ctx.save();
-        this.ctx.textAlign = 'center';
-        this.ctx.font = '40px Arial';
+        this.ctx.textAlign = "center";
+        this.ctx.font = "40px Arial";
         // Couleur du texte selon le joueur courant
-        this.ctx.fillStyle = this.currentPlayer === 1 ? 'red' : 'yellow';
+        this.ctx.fillStyle = this.currentPlayer === 1 ? "red" : "yellow";
         this.ctx.fillText(this.statusText, this.canvas.width / 2, y);
         this.ctx.restore();
     }
@@ -54,12 +57,12 @@ class Puissance4 {
     // Dessine le score dans les coins inférieurs du canvas
     drawScore() {
         this.ctx.save();
-        this.ctx.font = '50px Arial';
-        this.ctx.textBaseline = 'bottom';
+        this.ctx.font = "25px Arial";
+        this.ctx.textBaseline = "bottom";
 
         // Score du joueur 1 en bas à gauche
-        this.ctx.textAlign = 'left';
-        this.ctx.fillStyle = 'red';
+        this.ctx.textAlign = "left";
+        this.ctx.fillStyle = "red";
         this.ctx.fillText(
             `${this.player1Name}: ${this.scores[0]}`,
             20,
@@ -67,8 +70,8 @@ class Puissance4 {
         );
 
         // Score du joueur 2 en bas à droite
-        this.ctx.textAlign = 'right';
-        this.ctx.fillStyle = 'yellow';
+        this.ctx.textAlign = "right";
+        this.ctx.fillStyle = "yellow";
         this.ctx.fillText(
             `${this.player2Name}: ${this.scores[1]}`,
             this.canvas.width - 20,
@@ -80,8 +83,10 @@ class Puissance4 {
 
     // Calcule les marges pour centrer la grille
     calculateOffsets() {
-        const boardWidth = this.COLS * this.CELL_SIZE + (this.COLS + 1) * this.PADDING;
-        const boardHeight = this.ROWS * this.CELL_SIZE + (this.ROWS + 1) * this.PADDING;
+        const boardWidth =
+            this.COLS * this.CELL_SIZE + (this.COLS + 1) * this.PADDING;
+        const boardHeight =
+            this.ROWS * this.CELL_SIZE + (this.ROWS + 1) * this.PADDING;
         this.offsetX = (this.canvas.width - boardWidth) / 2;
         this.offsetY = (this.canvas.height - boardHeight) / 2;
     }
@@ -89,13 +94,20 @@ class Puissance4 {
     // Initialise les écouteurs et dessine le plateau vide
     init() {
         this.drawBoard();
-        this.canvas.addEventListener('click', (e) => this.handleClick(e));
-        this.canvas.addEventListener('mousemove', (e) => this.handleMouseMove(e));
-        this.canvas.addEventListener('mouseleave', () => { this.hoverCol = null; this.drawBoard(); });
-        this.resetButton.addEventListener('click', () => this.resetGame());
-        this.darkModeToggle.addEventListener('click', () => this.toggleDarkMode());
-        this.startButton.addEventListener('click', () => this.startGame());
-        this.container.classList.add('hidden');
+        this.canvas.addEventListener("click", (e) => this.handleClick(e));
+        this.canvas.addEventListener("mousemove", (e) =>
+            this.handleMouseMove(e)
+        );
+        this.canvas.addEventListener("mouseleave", () => {
+            this.hoverCol = null;
+            this.drawBoard();
+        });
+        this.resetButton.addEventListener("click", () => this.resetGame());
+        this.darkModeToggle.addEventListener("click", () =>
+            this.toggleDarkMode()
+        );
+        this.startButton.addEventListener("click", () => this.startGame());
+        this.container.classList.add("hidden");
     }
 
     // Dessine le plateau et les pions dans le canvas
@@ -104,8 +116,14 @@ class Puissance4 {
 
         for (let row = 0; row < this.ROWS; row++) {
             for (let col = 0; col < this.COLS; col++) {
-                const x = this.offsetX + this.PADDING + col * (this.CELL_SIZE + this.PADDING);
-                const y = this.offsetY + this.PADDING + row * (this.CELL_SIZE + this.PADDING);
+                const x =
+                    this.offsetX +
+                    this.PADDING +
+                    col * (this.CELL_SIZE + this.PADDING);
+                const y =
+                    this.offsetY +
+                    this.PADDING +
+                    row * (this.CELL_SIZE + this.PADDING);
 
                 // Cercle représentant l'emplacement du pion
                 this.ctx.beginPath();
@@ -119,11 +137,11 @@ class Puissance4 {
 
                 // Couleur selon le joueur
                 if (this.board[row][col] === 0) {
-                    this.ctx.fillStyle = 'white';
+                    this.ctx.fillStyle = "white";
                 } else if (this.board[row][col] === 1) {
-                    this.ctx.fillStyle = 'red';
+                    this.ctx.fillStyle = "red";
                 } else {
-                    this.ctx.fillStyle = 'yellow';
+                    this.ctx.fillStyle = "yellow";
                 }
 
                 this.ctx.fill();
@@ -140,14 +158,8 @@ class Puissance4 {
             const y = this.offsetY + this.PADDING - this.CELL_SIZE / 2;
 
             this.ctx.beginPath();
-            this.ctx.arc(
-                x,
-                y,
-                this.CELL_SIZE / 2 - 5,
-                0,
-                Math.PI * 2
-            );
-            this.ctx.fillStyle = this.currentPlayer === 1 ? 'red' : 'yellow';
+            this.ctx.arc(x, y, this.CELL_SIZE / 2 - 5, 0, Math.PI * 2);
+            this.ctx.fillStyle = this.currentPlayer === 1 ? "red" : "yellow";
             this.ctx.fill();
             this.ctx.stroke();
         }
@@ -202,7 +214,10 @@ class Puissance4 {
                 if (this.checkWin(row, col)) {
                     this.gameOver = true;
                     this.hoverCol = null;
-                    const winnerName = this.currentPlayer === 1 ? this.player1Name : this.player2Name;
+                    const winnerName =
+                        this.currentPlayer === 1
+                            ? this.player1Name
+                            : this.player2Name;
                     this.statusText = `${winnerName} a gagné !`;
                     this.scores[this.currentPlayer - 1]++;
                 } else {
@@ -211,7 +226,10 @@ class Puissance4 {
                     // Met à jour la position du jeton de survol : l’afficher
                     // seulement si la colonne n’est pas pleine après le coup.
                     this.hoverCol = this.board[0][col] === 0 ? col : null;
-                    const currentName = this.currentPlayer === 1 ? this.player1Name : this.player2Name;
+                    const currentName =
+                        this.currentPlayer === 1
+                            ? this.player1Name
+                            : this.player2Name;
                     this.statusText = `Tour de ${currentName}`;
                 }
                 this.drawBoard();
@@ -223,10 +241,22 @@ class Puissance4 {
     // Vérifie si un joueur a gagné après le dernier coup joué
     checkWin(row, col) {
         const directions = [
-            [[0, 1], [0, -1]], // horizontal
-            [[1, 0], [-1, 0]], // vertical
-            [[1, 1], [-1, -1]], // diagonale /
-            [[1, -1], [-1, 1]] // diagonale \ 
+            [
+                [0, 1],
+                [0, -1],
+            ], // horizontal
+            [
+                [1, 0],
+                [-1, 0],
+            ], // vertical
+            [
+                [1, 1],
+                [-1, -1],
+            ], // diagonale /
+            [
+                [1, -1],
+                [-1, 1],
+            ], // diagonale \
         ];
 
         for (const direction of directions) {
@@ -237,8 +267,10 @@ class Puissance4 {
                 let c = col + dy;
 
                 while (
-                    r >= 0 && r < this.ROWS &&
-                    c >= 0 && c < this.COLS &&
+                    r >= 0 &&
+                    r < this.ROWS &&
+                    c >= 0 &&
+                    c < this.COLS &&
                     this.board[r][c] === this.currentPlayer
                 ) {
                     count++;
@@ -255,7 +287,9 @@ class Puissance4 {
 
     // Réinitialise le plateau pour une nouvelle partie
     resetGame() {
-        this.board = Array(this.ROWS).fill().map(() => Array(this.COLS).fill(0));
+        this.board = Array(this.ROWS)
+            .fill()
+            .map(() => Array(this.COLS).fill(0));
         this.currentPlayer = 1;
         this.gameOver = false;
         this.hoverCol = null;
@@ -265,24 +299,24 @@ class Puissance4 {
 
     // Lance la partie après la saisie des noms
     startGame() {
-        this.player1Name = this.player1Input.value.trim() || 'Joueur 1';
-        this.player2Name = this.player2Input.value.trim() || 'Joueur 2';
+        this.player1Name = this.player1Input.value.trim() || "Joueur 1";
+        this.player2Name = this.player2Input.value.trim() || "Joueur 2";
         this.scores = [0, 0];
         this.statusText = `Tour de ${this.player1Name}`;
-        this.playerSetup.classList.add('hidden');
-        this.container.classList.remove('hidden');
+        this.playerSetup.classList.add("hidden");
+        this.container.classList.remove("hidden");
         this.resetGame();
     }
 
     // Active ou désactive le mode sombre
     toggleDarkMode() {
-        document.body.classList.toggle('dark-mode');
-        if (document.body.classList.contains('dark-mode')) {
-            this.darkModeToggle.textContent = '☀️';
-            this.darkModeToggle.title = 'Mode clair';
+        document.body.classList.toggle("dark-mode");
+        if (document.body.classList.contains("dark-mode")) {
+            this.darkModeToggle.textContent = "☀️";
+            this.darkModeToggle.title = "Mode clair";
         } else {
-            this.darkModeToggle.textContent = '🌙';
-            this.darkModeToggle.title = 'Mode sombre';
+            this.darkModeToggle.textContent = "🌙";
+            this.darkModeToggle.title = "Mode sombre";
         }
     }
 }
