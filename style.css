@@ -67,6 +67,8 @@ canvas {
     background-color: #45a049;
 }
 
+/* Styles de l'ancienne zone de statut supprimée */
+/*
 #status {
     font-size: 1.2rem;
     color: #333;
@@ -76,6 +78,7 @@ canvas {
 body.dark-mode #status {
     color: #eee;
 }
+*/
 
 #darkModeToggle {
     padding: 0.5rem 1rem;
