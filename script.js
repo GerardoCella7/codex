@@ -7,7 +7,6 @@ class Puissance4 {
         this.canvas = document.getElementById('gameCanvas');
         this.ctx = this.canvas.getContext('2d');
         this.resetButton = document.getElementById('resetButton');
-        this.statusDisplay = document.getElementById('status');
         this.darkModeToggle = document.getElementById('darkModeToggle');
         this.scoreDisplay = document.getElementById('score');
         this.container = document.querySelector('.container');
@@ -32,11 +31,24 @@ class Puissance4 {
         this.player1Name = 'Joueur 1';
         this.player2Name = 'Joueur 2';
         this.scores = [0, 0];
+        this.statusText = 'Tour du joueur 1';
 
         // Calcul des décalages pour centrer la grille dans le canvas
         this.calculateOffsets();
 
         this.init();
+    }
+
+    // Affiche le message d\'état sous le plateau
+    drawStatus() {
+        const boardHeight = this.ROWS * this.CELL_SIZE + (this.ROWS + 1) * this.PADDING;
+        const y = this.offsetY + boardHeight + 20;
+        this.ctx.save();
+        this.ctx.textAlign = 'center';
+        this.ctx.font = '20px Arial';
+        this.ctx.fillStyle = document.body.classList.contains('dark-mode') ? '#eee' : '#333';
+        this.ctx.fillText(this.statusText, this.canvas.width / 2, y);
+        this.ctx.restore();
     }
 
     // Calcule les marges pour centrer la grille
@@ -112,6 +124,8 @@ class Puissance4 {
             this.ctx.fill();
             this.ctx.stroke();
         }
+
+        this.drawStatus();
     }
 
     // Gère le clic sur le plateau pour insérer un pion
@@ -160,9 +174,8 @@ class Puissance4 {
                 if (this.checkWin(row, col)) {
                     this.gameOver = true;
                     this.hoverCol = null;
-                    this.drawBoard();
                     const winnerName = this.currentPlayer === 1 ? this.player1Name : this.player2Name;
-                    this.statusDisplay.textContent = `${winnerName} a gagné !`;
+                    this.statusText = `${winnerName} a gagné !`;
                     this.scores[this.currentPlayer - 1]++;
                     this.updateScoreDisplay();
                 } else {
@@ -172,9 +185,9 @@ class Puissance4 {
                     // seulement si la colonne n’est pas pleine après le coup.
                     this.hoverCol = this.board[0][col] === 0 ? col : null;
                     const currentName = this.currentPlayer === 1 ? this.player1Name : this.player2Name;
-                    this.statusDisplay.textContent = `Tour de ${currentName}`;
-                    this.drawBoard();
+                    this.statusText = `Tour de ${currentName}`;
                 }
+                this.drawBoard();
                 return;
             }
         }
@@ -219,7 +232,7 @@ class Puissance4 {
         this.currentPlayer = 1;
         this.gameOver = false;
         this.hoverCol = null;
-        this.statusDisplay.textContent = `Tour de ${this.player1Name}`;
+        this.statusText = `Tour de ${this.player1Name}`;
         this.drawBoard();
     }
 
@@ -229,7 +242,7 @@ class Puissance4 {
         this.player2Name = this.player2Input.value.trim() || 'Joueur 2';
         this.scores = [0, 0];
         this.updateScoreDisplay();
-        this.statusDisplay.textContent = `Tour de ${this.player1Name}`;
+        this.statusText = `Tour de ${this.player1Name}`;
         this.playerSetup.classList.add('hidden');
         this.container.classList.remove('hidden');
         this.resetGame();
