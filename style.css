@@ -1,3 +1,4 @@
+/* Styles pour le jeu Puissance 4 */
 * {
     margin: 0;
     padding: 0;
@@ -58,4 +59,4 @@ canvas {
     font-size: 1.2rem;
     color: #333;
     font-weight: bold;
-} 
+}
