@@ -123,8 +123,8 @@ class Puissance4 {
         this.container.classList.add("hidden");
     }
 
-    // Joue un court son de "jeton qui tombe" lors de la pose d'un pion
-    playDropSound() {
+    // Configure et joue un son simple via WebAudio
+    playSound(type, freq, duration, volume) {
         if (!this.audioCtx) {
             this.audioCtx = new (window.AudioContext ||
                 window.webkitAudioContext)();
@@ -132,50 +132,30 @@ class Puissance4 {
         const ctx = this.audioCtx;
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
-        osc.type = "square";
-        osc.frequency.setValueAtTime(600, ctx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(150, ctx.currentTime + 0.2);
-        gain.gain.setValueAtTime(0.3, ctx.currentTime);
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, ctx.currentTime);
+        gain.gain.setValueAtTime(volume, ctx.currentTime);
         osc.connect(gain);
         gain.connect(ctx.destination);
         osc.start();
-        osc.stop(ctx.currentTime + 0.2);
+        osc.stop(ctx.currentTime + duration);
+        return osc;
+    }
+
+    // Joue un court son de "jeton qui tombe" lors de la pose d'un pion
+    playDropSound() {
+        const osc = this.playSound("square", 600, 0.2, 0.3);
+        osc.frequency.exponentialRampToValueAtTime(150, this.audioCtx.currentTime + 0.2);
     }
 
     // Joue un son bref pour signaler la victoire d'un joueur
     playWinSound() {
-        if (!this.audioCtx) {
-            this.audioCtx = new (window.AudioContext ||
-                window.webkitAudioContext)();
-        }
-        const ctx = this.audioCtx;
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = "sawtooth";
-        osc.frequency.setValueAtTime(880, ctx.currentTime);
-        gain.gain.setValueAtTime(0.4, ctx.currentTime);
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start();
-        osc.stop(ctx.currentTime + 0.4);
+        this.playSound("sawtooth", 880, 0.4, 0.4);
     }
 
     // Joue un son lorsque la partie se termine sur un match nul
     playDrawSound() {
-        if (!this.audioCtx) {
-            this.audioCtx = new (window.AudioContext ||
-                window.webkitAudioContext)();
-        }
-        const ctx = this.audioCtx;
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = "triangle";
-        osc.frequency.setValueAtTime(300, ctx.currentTime);
-        gain.gain.setValueAtTime(0.3, ctx.currentTime);
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start();
-        osc.stop(ctx.currentTime + 0.3);
+        this.playSound("triangle", 300, 0.3, 0.3);
     }
 
     // Dessine le plateau et les pions dans le canvas
