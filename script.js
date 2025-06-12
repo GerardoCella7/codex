@@ -51,6 +51,10 @@ class Puissance4 {
         this.ctx.save();
         this.ctx.textAlign = "center";
         this.ctx.font = "40px Arial";
+        this.ctx.shadowColor = "white";
+        this.ctx.shadowBlur = 5;
+        this.ctx.shadowOffsetX = 0;
+        this.ctx.shadowOffsetY = 0;
         // Couleur du texte selon l'état courant
         this.ctx.fillStyle = this.statusColor;
         this.ctx.fillText(this.statusText, this.canvas.width / 2, y);
@@ -62,6 +66,10 @@ class Puissance4 {
         this.ctx.save();
         this.ctx.font = "25px Arial";
         this.ctx.textBaseline = "bottom";
+        this.ctx.shadowColor = "white";
+        this.ctx.shadowBlur = 5;
+        this.ctx.shadowOffsetX = 0;
+        this.ctx.shadowOffsetY = 0;
 
         // Score du joueur 1 en bas à gauche
         this.ctx.textAlign = "left";
