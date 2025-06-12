@@ -54,9 +54,6 @@ class Puissance4 {
         // Couleur du texte selon l'état courant
         this.ctx.fillStyle = this.statusColor;
         this.ctx.fillText(this.statusText, this.canvas.width / 2, y);
-        this.ctx.lineWidth = 3;
-        this.ctx.strokeStyle = "white";
-        this.ctx.strokeText(this.statusText, this.canvas.width / 2, y);
         this.ctx.restore();
     }
 
@@ -74,25 +71,11 @@ class Puissance4 {
             20,
             this.canvas.height - 10
         );
-        this.ctx.lineWidth = 2;
-        this.ctx.strokeStyle = "white";
-        this.ctx.strokeText(
-            `${this.player1Name}: ${this.scores[0]}`,
-            20,
-            this.canvas.height - 10
-        );
 
         // Score du joueur 2 en bas à droite
         this.ctx.textAlign = "right";
         this.ctx.fillStyle = "yellow";
         this.ctx.fillText(
-            `${this.player2Name}: ${this.scores[1]}`,
-            this.canvas.width - 20,
-            this.canvas.height - 10
-        );
-        this.ctx.lineWidth = 2;
-        this.ctx.strokeStyle = "white";
-        this.ctx.strokeText(
             `${this.player2Name}: ${this.scores[1]}`,
             this.canvas.width - 20,
             this.canvas.height - 10
@@ -134,7 +117,8 @@ class Puissance4 {
     // Joue un court son de "jeton qui tombe" lors de la pose d'un pion
     playDropSound() {
         if (!this.audioCtx) {
-            this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            this.audioCtx = new (window.AudioContext ||
+                window.webkitAudioContext)();
         }
         const ctx = this.audioCtx;
         const osc = ctx.createOscillator();
@@ -152,7 +136,8 @@ class Puissance4 {
     // Joue un son bref pour signaler la victoire d'un joueur
     playWinSound() {
         if (!this.audioCtx) {
-            this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            this.audioCtx = new (window.AudioContext ||
+                window.webkitAudioContext)();
         }
         const ctx = this.audioCtx;
         const osc = ctx.createOscillator();
@@ -169,7 +154,8 @@ class Puissance4 {
     // Joue un son lorsque la partie se termine sur un match nul
     playDrawSound() {
         if (!this.audioCtx) {
-            this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            this.audioCtx = new (window.AudioContext ||
+                window.webkitAudioContext)();
         }
         const ctx = this.audioCtx;
         const osc = ctx.createOscillator();
