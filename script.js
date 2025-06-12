@@ -29,6 +29,7 @@ class Puissance4 {
         this.currentPlayer = 1;
         this.gameOver = false;
         this.hoverCol = null;
+        this.animating = false;
 
         // Informations sur les joueurs
         this.player1Name = "Joueur 1";
@@ -237,7 +238,7 @@ class Puissance4 {
 
     // Gère le clic sur le plateau pour insérer un pion
     handleClick(e) {
-        if (this.gameOver) return;
+        if (this.gameOver || this.animating) return;
 
         const rect = this.canvas.getBoundingClientRect();
         const x = e.clientX - rect.left - this.offsetX - this.PADDING;
@@ -251,7 +252,7 @@ class Puissance4 {
 
     // Affiche un pion temporaire lors du survol d'une colonne disponible
     handleMouseMove(e) {
-        if (this.gameOver) return;
+        if (this.gameOver || this.animating) return;
         const rect = this.canvas.getBoundingClientRect();
         const x = e.clientX - rect.left - this.offsetX - this.PADDING;
         const col = Math.floor(x / (this.CELL_SIZE + this.PADDING));
@@ -274,50 +275,86 @@ class Puissance4 {
 
     // Place un pion dans la colonne choisie
     dropPiece(col) {
+        if (this.animating) return;
         for (let row = this.ROWS - 1; row >= 0; row--) {
             if (this.board[row][col] === 0) {
-                this.board[row][col] = this.currentPlayer;
-                this.playDropSound();
+                this.hoverCol = null;
+                this.animating = true;
+                this.animateDrop(col, row, () => {
+                    this.board[row][col] = this.currentPlayer;
+                    this.playDropSound();
 
-                if (this.checkWin(row, col)) {
-                    this.gameOver = true;
-                    this.hoverCol = null;
-                    // La partie est finie : activer le bouton de nouvelle partie
-                    this.resetButton.disabled = false;
-                    this.playWinSound();
-                    const winnerName =
-                        this.currentPlayer === 1
-                            ? this.player1Name
-                            : this.player2Name;
-                    this.statusText = `${winnerName} a gagné !`;
-                    this.statusColor =
-                        this.currentPlayer === 1 ? "red" : "yellow";
-                    this.scores[this.currentPlayer - 1]++;
-                } else if (this.board.every((r) => r.every((c) => c !== 0))) {
-                    this.gameOver = true;
-                    this.hoverCol = null;
-                    this.resetButton.disabled = false;
-                    this.playDrawSound();
-                    this.statusText = "Match nul !";
-                    this.statusColor = "green";
-                } else {
-                    // Passage au joueur suivant
-                    this.currentPlayer = this.currentPlayer === 1 ? 2 : 1;
-                    // Met à jour la position du jeton de survol : l’afficher
-                    // seulement si la colonne n’est pas pleine après le coup.
-                    this.hoverCol = this.board[0][col] === 0 ? col : null;
-                    const currentName =
-                        this.currentPlayer === 1
-                            ? this.player1Name
-                            : this.player2Name;
-                    this.statusText = `Tour de ${currentName}`;
-                    this.statusColor =
-                        this.currentPlayer === 1 ? "red" : "yellow";
-                }
-                this.drawBoard();
+                    if (this.checkWin(row, col)) {
+                        this.gameOver = true;
+                        this.hoverCol = null;
+                        // La partie est finie : activer le bouton de nouvelle partie
+                        this.resetButton.disabled = false;
+                        this.playWinSound();
+                        const winnerName =
+                            this.currentPlayer === 1
+                                ? this.player1Name
+                                : this.player2Name;
+                        this.statusText = `${winnerName} a gagné !`;
+                        this.statusColor =
+                            this.currentPlayer === 1 ? "red" : "yellow";
+                        this.scores[this.currentPlayer - 1]++;
+                    } else if (this.board.every((r) => r.every((c) => c !== 0))) {
+                        this.gameOver = true;
+                        this.hoverCol = null;
+                        this.resetButton.disabled = false;
+                        this.playDrawSound();
+                        this.statusText = "Match nul !";
+                        this.statusColor = "green";
+                    } else {
+                        // Passage au joueur suivant
+                        this.currentPlayer = this.currentPlayer === 1 ? 2 : 1;
+                        // Met à jour la position du jeton de survol : l’afficher
+                        // seulement si la colonne n’est pas pleine après le coup.
+                        this.hoverCol = this.board[0][col] === 0 ? col : null;
+                        const currentName =
+                            this.currentPlayer === 1
+                                ? this.player1Name
+                                : this.player2Name;
+                        this.statusText = `Tour de ${currentName}`;
+                        this.statusColor =
+                            this.currentPlayer === 1 ? "red" : "yellow";
+                    }
+                    this.animating = false;
+                    this.drawBoard();
+                });
                 return;
             }
         }
+    }
+
+    animateDrop(col, targetRow, done) {
+        let y = this.offsetY + this.PADDING - this.CELL_SIZE / 2;
+        const finalY =
+            this.offsetY +
+            this.PADDING +
+            targetRow * (this.CELL_SIZE + this.PADDING) +
+            this.CELL_SIZE / 2;
+        const x =
+            this.offsetX +
+            this.PADDING +
+            col * (this.CELL_SIZE + this.PADDING) +
+            this.CELL_SIZE / 2;
+        const step = () => {
+            this.drawBoard();
+            this.ctx.beginPath();
+            this.ctx.arc(x, y, this.CELL_SIZE / 2 - 5, 0, Math.PI * 2);
+            this.ctx.fillStyle = this.currentPlayer === 1 ? "red" : "yellow";
+            this.ctx.fill();
+            this.ctx.stroke();
+            if (y < finalY) {
+                y += 20;
+                if (y > finalY) y = finalY;
+                requestAnimationFrame(step);
+            } else {
+                done();
+            }
+        };
+        requestAnimationFrame(step);
     }
 
     // Vérifie si un joueur a gagné après le dernier coup joué
@@ -375,6 +412,7 @@ class Puissance4 {
         this.currentPlayer = 1;
         this.gameOver = false;
         this.hoverCol = null;
+        this.animating = false;
         this.statusText = `Tour de ${this.player1Name}`;
         this.statusColor = "red";
         // Pendant la partie, le bouton de reset reste inactif
