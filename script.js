@@ -45,8 +45,9 @@ class Puissance4 {
         const y = this.offsetY + boardHeight + 20;
         this.ctx.save();
         this.ctx.textAlign = 'center';
-        this.ctx.font = '20px Arial';
-        this.ctx.fillStyle = document.body.classList.contains('dark-mode') ? '#eee' : '#333';
+        this.ctx.font = '40px Arial';
+        // Couleur du texte selon le joueur courant
+        this.ctx.fillStyle = this.currentPlayer === 1 ? 'red' : 'yellow';
         this.ctx.fillText(this.statusText, this.canvas.width / 2, y);
         this.ctx.restore();
     }
