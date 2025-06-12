@@ -152,6 +152,9 @@ class Puissance4 {
                 } else {
                     // Passage au joueur suivant
                     this.currentPlayer = this.currentPlayer === 1 ? 2 : 1;
+                    // Met à jour la position du jeton de survol : l’afficher
+                    // seulement si la colonne n’est pas pleine après le coup.
+                    this.hoverCol = this.board[0][col] === 0 ? col : null;
                     this.statusDisplay.textContent = `Tour du joueur ${this.currentPlayer}`;
                     this.drawBoard();
                 }
