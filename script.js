@@ -35,6 +35,7 @@ class Puissance4 {
         this.player2Name = "Joueur 2";
         this.scores = [0, 0];
         this.statusText = "Tour du joueur 1";
+        this.statusColor = "red";
 
         // Calcul des décalages pour centrer la grille dans le canvas
         this.calculateOffsets();
@@ -50,8 +51,8 @@ class Puissance4 {
         this.ctx.save();
         this.ctx.textAlign = "center";
         this.ctx.font = "40px Arial";
-        // Couleur du texte selon le joueur courant
-        this.ctx.fillStyle = this.currentPlayer === 1 ? "red" : "yellow";
+        // Couleur du texte selon l'état courant
+        this.ctx.fillStyle = this.statusColor;
         this.ctx.fillText(this.statusText, this.canvas.width / 2, y);
         this.ctx.restore();
     }
@@ -223,7 +224,15 @@ class Puissance4 {
                             ? this.player1Name
                             : this.player2Name;
                     this.statusText = `${winnerName} a gagné !`;
+                    this.statusColor =
+                        this.currentPlayer === 1 ? "red" : "yellow";
                     this.scores[this.currentPlayer - 1]++;
+                } else if (this.board.every((r) => r.every((c) => c !== 0))) {
+                    this.gameOver = true;
+                    this.hoverCol = null;
+                    this.resetButton.disabled = false;
+                    this.statusText = "Match nul !";
+                    this.statusColor = "green";
                 } else {
                     // Passage au joueur suivant
                     this.currentPlayer = this.currentPlayer === 1 ? 2 : 1;
@@ -235,6 +244,8 @@ class Puissance4 {
                             ? this.player1Name
                             : this.player2Name;
                     this.statusText = `Tour de ${currentName}`;
+                    this.statusColor =
+                        this.currentPlayer === 1 ? "red" : "yellow";
                 }
                 this.drawBoard();
                 return;
@@ -298,6 +309,7 @@ class Puissance4 {
         this.gameOver = false;
         this.hoverCol = null;
         this.statusText = `Tour de ${this.player1Name}`;
+        this.statusColor = "red";
         // Pendant la partie, le bouton de reset reste inactif
         this.resetButton.disabled = true;
         this.drawBoard();
@@ -309,6 +321,7 @@ class Puissance4 {
         this.player2Name = this.player2Input.value.trim() || "Joueur 2";
         this.scores = [0, 0];
         this.statusText = `Tour de ${this.player1Name}`;
+        this.statusColor = "red";
         this.playerSetup.classList.add("hidden");
         this.container.classList.remove("hidden");
         this.resetGame();
