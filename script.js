@@ -142,17 +142,17 @@ class Puissance4 {
         for (let row = this.ROWS - 1; row >= 0; row--) {
             if (this.board[row][col] === 0) {
                 this.board[row][col] = this.currentPlayer;
-                this.drawBoard();
 
                 if (this.checkWin(row, col)) {
                     this.gameOver = true;
+                    this.drawBoard();
                     this.statusDisplay.textContent = `Joueur ${this.currentPlayer} a gagné !`;
-                    return;
+                } else {
+                    // Passage au joueur suivant
+                    this.currentPlayer = this.currentPlayer === 1 ? 2 : 1;
+                    this.statusDisplay.textContent = `Tour du joueur ${this.currentPlayer}`;
+                    this.drawBoard();
                 }
-
-                // Passage au joueur suivant
-                this.currentPlayer = this.currentPlayer === 1 ? 2 : 1;
-                this.statusDisplay.textContent = `Tour du joueur ${this.currentPlayer}`;
                 return;
             }
         }
