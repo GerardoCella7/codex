@@ -132,6 +132,40 @@ class Puissance4 {
         osc.stop(ctx.currentTime + 0.2);
     }
 
+    // Joue un son bref pour signaler la victoire d'un joueur
+    playWinSound() {
+        if (!this.audioCtx) {
+            this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        const ctx = this.audioCtx;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = "sawtooth";
+        osc.frequency.setValueAtTime(880, ctx.currentTime);
+        gain.gain.setValueAtTime(0.4, ctx.currentTime);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.4);
+    }
+
+    // Joue un son lorsque la partie se termine sur un match nul
+    playDrawSound() {
+        if (!this.audioCtx) {
+            this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        const ctx = this.audioCtx;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = "triangle";
+        osc.frequency.setValueAtTime(300, ctx.currentTime);
+        gain.gain.setValueAtTime(0.3, ctx.currentTime);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.3);
+    }
+
     // Dessine le plateau et les pions dans le canvas
     drawBoard() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -239,6 +273,7 @@ class Puissance4 {
                     this.hoverCol = null;
                     // La partie est finie : activer le bouton de nouvelle partie
                     this.resetButton.disabled = false;
+                    this.playWinSound();
                     const winnerName =
                         this.currentPlayer === 1
                             ? this.player1Name
@@ -251,6 +286,7 @@ class Puissance4 {
                     this.gameOver = true;
                     this.hoverCol = null;
                     this.resetButton.disabled = false;
+                    this.playDrawSound();
                     this.statusText = "Match nul !";
                     this.statusColor = "green";
                 } else {
