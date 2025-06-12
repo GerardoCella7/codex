@@ -7,6 +7,8 @@ class Puissance4 {
         this.canvas = document.getElementById("gameCanvas");
         this.ctx = this.canvas.getContext("2d");
         this.resetButton = document.getElementById("resetButton");
+        // Le bouton de reset n'est actif qu'une fois la partie terminée
+        this.resetButton.disabled = true;
         this.darkModeToggle = document.getElementById("darkModeToggle");
         this.container = document.querySelector(".container");
         this.playerSetup = document.getElementById("playerSetup");
@@ -214,6 +216,8 @@ class Puissance4 {
                 if (this.checkWin(row, col)) {
                     this.gameOver = true;
                     this.hoverCol = null;
+                    // La partie est finie : activer le bouton de nouvelle partie
+                    this.resetButton.disabled = false;
                     const winnerName =
                         this.currentPlayer === 1
                             ? this.player1Name
@@ -294,6 +298,8 @@ class Puissance4 {
         this.gameOver = false;
         this.hoverCol = null;
         this.statusText = `Tour de ${this.player1Name}`;
+        // Pendant la partie, le bouton de reset reste inactif
+        this.resetButton.disabled = true;
         this.drawBoard();
     }
 

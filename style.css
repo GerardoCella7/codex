@@ -68,6 +68,11 @@ canvas {
     background-color: #45a049;
 }
 
+#resetButton:disabled {
+    background-color: #9e9e9e;
+    cursor: not-allowed;
+}
+
 /* Styles de l'ancienne zone de statut supprimée */
 /*
 #status {
