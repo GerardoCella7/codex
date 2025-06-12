@@ -20,6 +20,7 @@ class Puissance4 {
         this.board = Array(this.ROWS).fill().map(() => Array(this.COLS).fill(0));
         this.currentPlayer = 1;
         this.gameOver = false;
+        this.hoverCol = null;
 
         // Calcul des décalages pour centrer la grille dans le canvas
         this.calculateOffsets();
@@ -39,6 +40,8 @@ class Puissance4 {
     init() {
         this.drawBoard();
         this.canvas.addEventListener('click', (e) => this.handleClick(e));
+        this.canvas.addEventListener('mousemove', (e) => this.handleMouseMove(e));
+        this.canvas.addEventListener('mouseleave', () => { this.hoverCol = null; this.drawBoard(); });
         this.resetButton.addEventListener('click', () => this.resetGame());
         this.darkModeToggle.addEventListener('click', () => this.toggleDarkMode());
     }
@@ -75,6 +78,27 @@ class Puissance4 {
                 this.ctx.stroke();
             }
         }
+
+        if (this.hoverCol !== null) {
+            const x =
+                this.offsetX +
+                this.PADDING +
+                this.hoverCol * (this.CELL_SIZE + this.PADDING) +
+                this.CELL_SIZE / 2;
+            const y = this.offsetY + this.PADDING - this.CELL_SIZE / 2;
+
+            this.ctx.beginPath();
+            this.ctx.arc(
+                x,
+                y,
+                this.CELL_SIZE / 2 - 5,
+                0,
+                Math.PI * 2
+            );
+            this.ctx.fillStyle = this.currentPlayer === 1 ? 'red' : 'yellow';
+            this.ctx.fill();
+            this.ctx.stroke();
+        }
     }
 
     // Gère le clic sur le plateau pour insérer un pion
@@ -89,6 +113,28 @@ class Puissance4 {
         if (x >= 0 && x <= maxX && col >= 0 && col < this.COLS) {
             this.dropPiece(col);
         }
+    }
+
+    // Affiche un pion temporaire lors du survol d'une colonne disponible
+    handleMouseMove(e) {
+        const rect = this.canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left - this.offsetX - this.PADDING;
+        const col = Math.floor(x / (this.CELL_SIZE + this.PADDING));
+        const maxX = this.COLS * (this.CELL_SIZE + this.PADDING) - this.PADDING;
+
+        if (
+            x >= 0 &&
+            x <= maxX &&
+            col >= 0 &&
+            col < this.COLS &&
+            this.board[0][col] === 0
+        ) {
+            this.hoverCol = col;
+        } else {
+            this.hoverCol = null;
+        }
+
+        this.drawBoard();
     }
 
     // Place un pion dans la colonne choisie
@@ -150,6 +196,7 @@ class Puissance4 {
         this.board = Array(this.ROWS).fill().map(() => Array(this.COLS).fill(0));
         this.currentPlayer = 1;
         this.gameOver = false;
+        this.hoverCol = null;
         this.statusDisplay.textContent = `Tour du joueur ${this.currentPlayer}`;
         this.drawBoard();
     }
