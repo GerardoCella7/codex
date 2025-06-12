@@ -4,4 +4,4 @@ Ce projet contient une implémentation basique du jeu **Puissance 4** réalisée
 
 Ouvrez simplement `index.html` dans un navigateur pour lancer une partie.
 
-Vous pouvez activer un **mode sombre** grâce au bouton "Mode sombre" présent sur la page.
+Vous pouvez activer un **mode sombre** grâce au bouton représenté par une icône de lune ou de soleil situé en haut à droite de la page.

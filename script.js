@@ -278,9 +278,11 @@ class Puissance4 {
     toggleDarkMode() {
         document.body.classList.toggle('dark-mode');
         if (document.body.classList.contains('dark-mode')) {
-            this.darkModeToggle.textContent = 'Mode clair';
+            this.darkModeToggle.textContent = '☀️';
+            this.darkModeToggle.title = 'Mode clair';
         } else {
-            this.darkModeToggle.textContent = 'Mode sombre';
+            this.darkModeToggle.textContent = '🌙';
+            this.darkModeToggle.title = 'Mode sombre';
         }
     }
 }
